@@ -56,11 +56,46 @@ struct cartridge createCartridge(char *romPath) {
 	}
 	printf("\n");
 
-	// TODO: check 0x143 for GBC indicator
+	uint8_t flagCGB = memory[0x143];
+	switch (flagCGB) {
+		case 0x80:
+			printf("Supports CGB functions, but also works on old gameboy\n");
+			break;
+		case 0xC0: // physically the same as 0x80
+			printf("Supports CGB only\n");
+			break;
+		default:
+			printf("Supports GB only\n");
+			break; // TODO: stylistically should I do this?
+	}
+
 	// TODO: check 0x144 and 0x145 for licensee
 	// TODO: check 0x146 for GB / SGB indicator
 
-	// TODO: check cartridge type
+	uint8_t cartridgeTypeHex = memory[0x147]; // TODO: better name
+	switch (cartridgeTypeHex) {
+		case ROM:
+			printf("Cartridge type: ROM\n");
+			break;
+		case ROM_MBC1:
+			printf("Cartridge type: ROM_MBC1\n");
+			break;
+		case ROM_MBC1_RAM:
+			printf("Cartridge type: ROM_MBC1_RAM\n");
+			break;
+		case ROM_MBC1_RAM_BATTERY:
+			printf("Cartridge type: ROM_MBC1_RAM_BATTERY\n");
+			break;
+		case ROM_MBC2:
+			printf("Cartridge type: ROM_MBC2\n");
+			break;
+		case ROM_MBC2_BATTERY:
+			printf("Cartridge type: ROM_MBC2_BATTERY\n");
+			break;
+		default:
+			printf("Cartridge type: %X\n", cartridgeTypeHex);
+			break;
+	}
 
 	return (struct cartridge) {};
 }
